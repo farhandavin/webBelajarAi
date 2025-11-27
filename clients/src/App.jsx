@@ -22,7 +22,7 @@ function App() {
     }
 
     try {
-      const response = await fetch("https://web-belajar-ai-tekt.vercel.app", {
+      const response = await fetch("https://web-belajar-ai-tekt.vercel.app/api/buat-kuis", {
         method: "POST",
         body: formData,
       });
