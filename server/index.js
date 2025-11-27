@@ -13,7 +13,7 @@ const port = process.env.PORT || 5000;
 // Middleware
 // PENTING: Ganti origin dengan URL frontend Vercel kamu nanti saat produksi
 app.use(cors({
-    origin: "https://web-belajar-ai-pbta-i3bjo5ikh-farhandavins-projects.vercel.app/", // Sementara boleh begini, nanti ganti ke URL frontend kamu
+    origin: "https://web-belajar-ai-pbta-i3bjo5ikh-farhandavins-projects.vercel.app", // Sementara boleh begini, nanti ganti ke URL frontend kamu
     methods: ["GET", "POST"]
 }));
 app.use(express.json());
