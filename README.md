@@ -2,8 +2,8 @@
 
 A smart web application designed to automatically generate multiple-choice quizzes by analyzing uploaded study materials (PDF/Images) or raw text. This application is powered by **Google Gemini AI** to ensure high-quality question generation.
 
-![App Screenshot](./screenshot.png)
-*(Replace this with your actual screenshot path, or remove this line if not available)*
+<img width="1919" height="914" alt="image" src="https://github.com/user-attachments/assets/2d97eedf-8762-4e6c-8614-5b4f62310477" />
+
 
 ## ✨ Key Features
 
@@ -17,7 +17,7 @@ A smart web application designed to automatically generate multiple-choice quizz
 
 * **Frontend:** React.js, CSS3 (Custom Styling)
 * **Backend:** Node.js, Express.js
-* **AI Model:** Google Gemini Flash 1.5 (`@google/generative-ai`)
+* **AI Model:** Google Gemini Flash 2.5 (`@google/generative-ai`)
 * **Database:** PostgreSQL (`pg`)
 * **File Handling:** Multer
 
