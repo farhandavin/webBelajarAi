@@ -2,47 +2,57 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const { Pool } = require('pg');
-const multer = require('multer'); // Wajib ada untuk upload
+const multer = require('multer');
 const fs = require('fs');
 const { GoogleGenerativeAI } = require("@google/generative-ai");
-const { GoogleAIFileManager } = require("@google/generative-ai/server"); 
+const { GoogleAIFileManager } = require("@google/generative-ai/server");
 
 const app = express();
-const port = 5000;
+const port = process.env.PORT || 5000;
 
 // Middleware
-app.use(cors());
+// PENTING: Ganti origin dengan URL frontend Vercel kamu nanti saat produksi
+app.use(cors({
+    origin: "https://web-belajar-ai-pbta-i3bjo5ikh-farhandavins-projects.vercel.app/", // Sementara boleh begini, nanti ganti ke URL frontend kamu
+    methods: ["GET", "POST"]
+}));
 app.use(express.json());
 
-// Konfigurasi Upload File (Disimpan sementara di folder 'uploads')
-const upload = multer({ dest: 'uploads/' });
+// --- PERBAIKAN 1: File Upload untuk Vercel ---
+// Vercel hanya mengizinkan tulis file di folder '/tmp'
+const upload = multer({ dest: '/tmp/' });
 
 // Konfigurasi Gemini
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const fileManager = new GoogleAIFileManager(process.env.GEMINI_API_KEY);
 
-// Konfigurasi Database PostgreSQL
+// --- PERBAIKAN 2: Database Cloud ---
+// Jangan hardcode password di sini! Gunakan Environment Variables
 const pool = new Pool({
-    user: 'postgres',        // Pastikan ini benar
-    host: 'localhost',
-    database: 'belajar_ai',
-    password: 'FarhanDR14@', 
-    port: 5432,
+    connectionString: process.env.DATABASE_URL, // Gunakan format URL koneksi (misal dari Supabase/Neon)
+    ssl: {
+        rejectUnauthorized: false // Wajib untuk sebagian besar Cloud Database
+    }
 });
 
-// ROUTE: Membuat Soal (Support Teks & File)
+// ROUTE: Cek Server
+app.get('/', (req, res) => {
+    res.send('Server AI Berjalan!');
+});
+
+// ROUTE: Membuat Soal
 app.post('/api/buat-kuis', upload.single('file_materi'), async (req, res) => {
     const { text_materi } = req.body;
-    const file = req.file; 
+    const file = req.file;
 
     try {
-        const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+        const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" }); // Pastikan model version benar
         let promptContent = [];
 
         // 1. Cek apakah user upload file
         if (file) {
             console.log("Mengupload file...", file.originalname);
-            
+
             const uploadResponse = await fileManager.uploadFile(file.path, {
                 mimeType: file.mimetype,
                 displayName: file.originalname,
@@ -54,7 +64,7 @@ app.post('/api/buat-kuis', upload.single('file_materi'), async (req, res) => {
                     fileUri: uploadResponse.file.uri
                 }
             });
-        } 
+        }
         // 2. Jika tidak ada file, cek teks
         else if (text_materi) {
             promptContent.push({ text: text_materi });
@@ -63,22 +73,33 @@ app.post('/api/buat-kuis', upload.single('file_materi'), async (req, res) => {
         }
 
         // Prompt Instruksi
-        promptContent.push({ text: `
+        promptContent.push({
+            text: `
             Buatkan 10 soal pilihan ganda beserta kunci jawabannya berdasarkan materi ini buatkan sangat rumit.
-            OUTPUT WAJIB JSON MURNI:
+            OUTPUT WAJIB JSON MURNI TANPA MARKDOWN:
             [{"soal": "...", "pilihan": ["A...", "B..."], "jawaban_benar": "..."}]
         `});
 
         const result = await model.generateContent(promptContent);
         const response = await result.response;
-        
+
         let textResult = response.text().replace(/```json/g, '').replace(/```/g, '').trim();
-        const kuisData = JSON.parse(textResult);
+        
+        // Error handling jika JSON rusak
+        let kuisData;
+        try {
+            kuisData = JSON.parse(textResult);
+        } catch (e) {
+            console.error("Gagal parsing JSON dari AI:", textResult);
+            return res.status(500).json({ success: false, message: "Gagal memproses respon AI" });
+        }
 
-        // Hapus file sementara
-        if (file) fs.unlinkSync(file.path);
+        // Hapus file sementara di /tmp agar storage tidak penuh
+        if (file && fs.existsSync(file.path)) {
+            fs.unlinkSync(file.path);
+        }
 
-        // Simpan ke Database (Versi Lengkap dengan tipe_sumber)
+        // Simpan ke Database Cloud
         const tipe = file ? 'file' : 'text';
         await pool.query(
             'INSERT INTO riwayat_kuis (materi, soal_jawaban, tipe_sumber) VALUES ($1, $2, $3)',
@@ -93,6 +114,11 @@ app.post('/api/buat-kuis', upload.single('file_materi'), async (req, res) => {
     }
 });
 
-app.listen(port, () => {
-    console.log(`Server berjalan di http://localhost:${port}`);
-});
+// --- PERBAIKAN 3: Handler Vercel ---
+if (require.main === module) {
+    app.listen(port, () => {
+        console.log(`Server berjalan di port ${port}`);
+    });
+}
+
+module.exports = app;
