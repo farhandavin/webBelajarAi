@@ -1,0 +1,19 @@
+# --- Dependencies (File Sampah Berat) ---
+node_modules/
+/dist
+/build
+
+# --- Keamanan (SANGAT PENTING) ---
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# --- File Sementara/Sampah Sistem ---
+.DS_Store
+Thumbs.db
+
+# --- Upload Sementara ---
+# Kita tidak mau foto/pdf hasil tes user memenuhi GitHub
+uploads/

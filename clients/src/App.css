@@ -1,0 +1,259 @@
+@import url('https://fonts.googleapis.com/css?family=Saira+Semi+Condensed&display=swap');
+
+/* --- GLOBAL SETTINGS --- */
+* {
+  font-family: 'Saira Semi Condensed', sans-serif;
+  box-sizing: border-box;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); /* Transisi halus global */
+}
+
+body {
+  background: #f0f2f5;
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  padding-top: 50px;
+}
+
+.container {
+  width: 100%;
+  max-width: 600px; /* Lebih ramping agar fokus */
+  padding: 0 20px;
+  padding-bottom: 50px;
+}
+
+/* --- FORM SECTION --- */
+.input-section {
+  background: white;
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+h1 {
+  margin-top: 0;
+  color: #333;
+  font-weight: 700;
+}
+
+/* --- TAB BUTTONS --- */
+.mode-buttons {
+  display: flex;
+  background: #e4e6eb;
+  padding: 5px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+.mode-buttons button {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  background: transparent;
+  color: #666;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.mode-buttons button.active {
+  background: white;
+  color: #2f4ad0;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+/* --- INPUTS --- */
+textarea {
+  width: 100%;
+  padding: 15px;
+  border: 2px solid #e4e6eb;
+  border-radius: 10px;
+  font-size: 15px;
+  color: #333;
+  background: #fafafa;
+  outline: none;
+  resize: vertical;
+}
+
+textarea:focus {
+  border-color: #2f4ad0;
+  background: white;
+}
+
+input[type="file"] {
+  padding: 10px;
+  background: #fafafa;
+  border-radius: 8px;
+  width: 100%;
+}
+
+/* --- ACTION BUTTON --- */
+.generate-btn {
+  width: 100%;
+  margin-top: 15px;
+  padding: 15px;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: bold;
+  color: white;
+  background: linear-gradient(135deg, #2f4ad0, #5b73e8);
+  cursor: pointer;
+  box-shadow: 0 5px 15px rgba(47, 74, 208, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.generate-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(47, 74, 208, 0.4);
+}
+
+.generate-btn:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* --- QUIZ ITEMS (ANIMATED) --- */
+.quiz-item {
+  background: white;
+  padding: 25px;
+  border-radius: 15px;
+  margin-bottom: 20px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.03);
+  opacity: 0; /* Mulai dari invisible */
+  transform: translateY(20px); /* Mulai dari agak bawah */
+  animation: fadeInUp 0.6s ease forwards; /* Efek muncul */
+}
+
+.quiz-item h3 {
+  margin-top: 0;
+  font-size: 18px;
+  color: #222;
+}
+
+/* Tombol Pilihan Jawaban */
+.option-btn {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 12px 15px;
+  margin-bottom: 8px;
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  color: #495057;
+  cursor: pointer;
+  font-size: 15px;
+  transition: all 0.2s ease;
+}
+
+.option-btn:hover {
+  background: #e2e6ea;
+  padding-left: 20px; /* Efek geser sedikit saat hover */
+}
+
+/* Details Jawaban */
+details {
+  margin-top: 15px;
+  padding-top: 10px;
+  border-top: 1px solid #eee;
+  color: #666;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+/* --- ANIMATIONS & LOADER --- */
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Spinner Loading Sederhana */
+.loader {
+  border: 3px solid rgba(255,255,255,0.3);
+  border-radius: 50%;
+  border-top: 3px solid white;
+  width: 20px;
+  height: 20px;
+  animation: spin 1s linear infinite;
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 10px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Wrapper kotak garis putus-putus */
+.file-upload-wrapper {
+  padding: 30px;
+  border: 2px dashed #ccc;
+  border-radius: 12px;
+  margin-top: 15px;
+  text-align: center;
+  background-color: #f9f9f9;
+  transition: all 0.3s ease;
+}
+
+.file-upload-wrapper:hover {
+  border-color: #6c5ce7;
+  background-color: #f0f0ff;
+}
+
+.support-text {
+  margin: 0 0 15px 0;
+  color: #666;
+  font-size: 14px;
+}
+
+/* Desain Tombol Upload Custom */
+.custom-file-upload {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #fff;
+  color: #333;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 16px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  transition: all 0.2s;
+}
+
+.custom-file-upload:hover {
+  background-color: #e9e9e9;
+  transform: translateY(-2px);
+}
+
+.custom-file-upload:active {
+  transform: translateY(0);
+}
+
+/* Tampilan Nama File */
+.file-name-display {
+  margin-top: 15px;
+  font-size: 14px;
+}
+
+.file-selected {
+  color: #27ae60; /* Warna hijau sukses */
+  font-weight: 600;
+  word-break: break-all; /* Agar nama file panjang turun ke bawah, tidak potong */
+}
+
+.file-placeholder {
+  color: #999;
+  font-style: italic;
+}
